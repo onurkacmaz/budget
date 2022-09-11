@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Models\Transaction;
+use App\Utils\PriceUtil;
 use Illuminate\Database\Eloquent\Collection;
 
 class TransactionService
@@ -14,6 +15,9 @@ class TransactionService
             ->where('user_id', $filters['user']->id)
             ->limit($filters['limit'])
             ->orderByDesc('created_at')
-            ->get();
+            ->get()
+            ->each(function (Transaction $transaction) {
+                $transaction->amount = PriceUtil::format($transaction->amount);
+            });
     }
 }
