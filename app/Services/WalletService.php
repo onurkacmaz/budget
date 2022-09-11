@@ -22,4 +22,12 @@ class WalletService
             'balance' => $balance
         ]);
     }
+
+    public function updateWallet(Wallet $wallet, float $balance): Wallet|Model
+    {
+        $wallet->balance = $balance;
+        $wallet->save();
+
+        return $wallet;
+    }
 }

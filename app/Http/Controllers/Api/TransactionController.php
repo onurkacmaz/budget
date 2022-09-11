@@ -32,7 +32,7 @@ class TransactionController extends Controller
     /**
      * @throws ApiException
      */
-    public function store(CreateTransactionRequest $request, TransactionService $transactionService): JsonResponse
+    public function store(CreateTransactionRequest $request, WalletService $walletService, TransactionService $transactionService): JsonResponse
     {
         try {
             $date = new DateTime($request->get('data'));
@@ -42,12 +42,20 @@ class TransactionController extends Controller
 
         $user = $request->user();
 
+        $wallet = $walletService->getWalletByUser($user);
+
+        if ($request->get('amount') > $wallet->balance) {
+            throw new ApiException('Insufficient funds');
+        }
+
         $transaction = $transactionService->create(
             $user,
             $request->get('type'),
             $request->get('amount'),
             $date,
         );
+
+        $walletService->updateWallet($wallet, $wallet->balance - $request->get('amount'));
 
         return response()->json($transaction, 201);
     }
