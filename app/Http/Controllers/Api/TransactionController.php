@@ -35,7 +35,7 @@ class TransactionController extends Controller
     public function store(CreateTransactionRequest $request, WalletService $walletService, TransactionService $transactionService): JsonResponse
     {
         try {
-            $date = new DateTime($request->get('data'));
+            $date = new DateTime($request->get('date'));
         } catch (Exception) {
             throw new ApiException('Invalid date format');
         }
