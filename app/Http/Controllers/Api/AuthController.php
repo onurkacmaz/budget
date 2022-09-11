@@ -31,7 +31,7 @@ class AuthController extends Controller
      * @throws ApiException
      */
     public function register(RegisterRequest $request, AuthService $authService): RegisterResource {
-        $user = $authService->register($request->get('name'), $request->get('email'), $request->get('password'));
+        $user = $authService->register($request->get('name'), $request->get('email'), $request->get('password'), $request->get('phone'));
         return new RegisterResource($user);
     }
 

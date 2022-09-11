@@ -47,7 +47,7 @@ class AuthService
     /**
      * @throws ApiException
      */
-    public function register(string $name, string $email, string $password): User|Model {
+    public function register(string $name, string $email, string $password, string $phone): User|Model {
         $user = $this->getUserByEmail($email);
         if (!is_null($user)) {
             throw new ApiException("USER_ALREADY_EXISTS", 422);
@@ -57,6 +57,7 @@ class AuthService
             'name' => $name,
             'email' => $email,
             'password' => Hash::make($password),
+            'phone' => $phone
         ]);
         $user->setToken($this->createToken($user));
         return $user;
