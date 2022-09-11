@@ -20,6 +20,7 @@ class TransactionService
             ->orderByDesc('created_at')
             ->get()
             ->each(function (Transaction $transaction) {
+                $transaction->transaction_date = (new DateTime($transaction->transaction_date))->format("D, j M Y");
                 $transaction->amount = PriceUtil::format($transaction->amount);
             });
     }
