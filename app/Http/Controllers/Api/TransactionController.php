@@ -55,7 +55,13 @@ class TransactionController extends Controller
             $date,
         );
 
-        $walletService->updateWallet($wallet, $wallet->balance - $request->get('amount'));
+        if ($request->get('type') === "expense") {
+            $walletService->updateWallet($wallet, $wallet->balance - $request->get('amount'));
+        }
+
+        if ($request->get('type') === "income") {
+            $walletService->updateWallet($wallet, $wallet->balance + $request->get('amount'));
+        }
 
         return response()->json($transaction, 201);
     }
