@@ -35,6 +35,7 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     });
     Route::group(['prefix' => 'transactions'], function () {
         Route::get('/', [TransactionController::class, 'index']);
+        Route::post('/', [TransactionController::class, 'store']);
     });
     Route::put('/update-profile-picture/{id}', [AccountController::class, 'updateProfilePicture']);
 });
