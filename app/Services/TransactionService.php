@@ -30,7 +30,7 @@ class TransactionService
             'user_id' => $user->id,
             'type' => $type,
             'amount' => $amount,
-            'transaction_date' => $date
+            'transaction_date' => $date->format("Y-m-d H:i:s")
         ]);
     }
 }
