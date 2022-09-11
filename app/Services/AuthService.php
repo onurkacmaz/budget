@@ -13,10 +13,12 @@ use Laravel\Sanctum\PersonalAccessToken;
 class AuthService
 {
     private SmsService $smsService;
+    private WalletService $walletService;
 
     public function __construct()
     {
         $this->smsService = new SmsService(new Twilio());
+        $this->walletService = new WalletService();
     }
 
     /**
@@ -60,6 +62,8 @@ class AuthService
             'phone' => $phone
         ]);
         $user->setToken($this->createToken($user));
+
+        $this->walletService->createWallet($user);
         return $user;
     }
 

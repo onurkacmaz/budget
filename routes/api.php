@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Api\AccountController;
 use App\Http\Controllers\Api\AuthController;
+use App\Http\Controllers\Api\WalletController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -27,6 +28,10 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
         Route::get('/{id}', [AccountController::class, 'view']);
         Route::put('/{id}', [AccountController::class, 'update']);
         Route::delete('/{id}', [AccountController::class, 'destroy']);
+    });
+    Route::group(['prefix' => 'wallet'], function () {
+        Route::get('/', [WalletController::class, 'view']);
+        Route::put('/{id}', [AccountController::class, 'update']);
     });
     Route::put('/update-profile-picture/{id}', [AccountController::class, 'updateProfilePicture']);
 });
