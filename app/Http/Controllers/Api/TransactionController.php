@@ -44,7 +44,7 @@ class TransactionController extends Controller
 
         $wallet = $walletService->getWalletByUser($user);
 
-        if ($request->get('amount') > $wallet->balance) {
+        if ($request->get('type') === "expense" && $request->get('amount') > $wallet->balance) {
             throw new ApiException('Insufficient funds');
         }
 
