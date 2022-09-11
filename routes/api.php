@@ -40,6 +40,7 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     });
     Route::group(['prefix' => 'notifications'], function () {
         Route::get('/', [NotificationController::class, 'index']);
+        Route::get('/mark-read', [NotificationController::class, 'markRead']);
     });
     Route::put('/update-profile-picture/{id}', [AccountController::class, 'updateProfilePicture']);
 });

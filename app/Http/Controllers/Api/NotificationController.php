@@ -22,4 +22,12 @@ class NotificationController extends Controller
 
         return response()->json($notifications);
     }
+
+    public function markRead(Request $request): JsonResponse
+    {
+        $user = $request->user();
+        $this->notificationService->markReadNotifications($user);
+
+        return response()->json(['message' => 'Notifications marked as read']);
+    }
 }
