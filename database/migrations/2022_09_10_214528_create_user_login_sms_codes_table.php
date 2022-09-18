@@ -15,7 +15,8 @@ class CreateUserLoginSmsCodesTable extends Migration
     {
         Schema::create('user_login_sms_codes', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')->constrained('users');
+            $table->foreignId('user_id')->nullable()->constrained('users');
+            $table->string('phone_number')->nullable();
             $table->string('sms_code', "6");
             $table->timestamp('used_at')->nullable();
             $table->timestamp('expired_at')->nullable();

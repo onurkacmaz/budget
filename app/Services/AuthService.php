@@ -150,15 +150,19 @@ class AuthService
     /**
      * @throws ApiException
      */
-    public function verifySmsCode(string $email, string $smsCode): bool
+    public function verifySmsCode(string $email, string $smsCode, string $phone = null): bool
     {
-        $user = $this->getUserByEmail($email);
+        if (is_null($phone)) {
+            $user = $this->getUserByEmail($email);
 
-        if (is_null($user)) {
-            throw new ApiException("USER_NOT_FOUND", 404);
+            if (is_null($user)) {
+                throw new ApiException("USER_NOT_FOUND", 404);
+            }
+
+            $smsCode = $this->getLastLoginSMSCodeByUser($user, $smsCode);
+        }else {
+            $smsCode = $this->getLastSignUpVerificationSmsByPhone($phone, $smsCode);
         }
-
-        $smsCode = $this->getLastLoginSMSCodeByUser($user, $smsCode);
 
         if (is_null($smsCode)) {
             throw new ApiException("INVALID_SMS_CODE", 422);
@@ -169,5 +173,16 @@ class AuthService
         ]);
 
         return true;
+    }
+
+    private function getLastSignUpVerificationSmsByPhone(string $phone, string $smsCode): UserLoginSmsCode|Model|null
+    {
+        return UserLoginSmsCode::query()
+            ->whereNull('user_id')
+            ->whereNull("used_at")
+            ->where('phone_number', $phone)
+            ->where('sms_code', $smsCode)
+            ->orderByDesc('created_at')
+            ->first();
     }
 }

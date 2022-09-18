@@ -23,7 +23,8 @@ class VerifySmsCodeRequest extends BaseRequest
     {
         return [
             'email' => 'required|email',
-            'smsCode' => 'numeric|required|min:6'
+            'smsCode' => 'numeric|required|min:6',
+            'phone' => 'numeric|nullable'
         ];
     }
 }
