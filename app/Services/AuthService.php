@@ -104,30 +104,36 @@ class AuthService
     /**
      * @throws ApiException
      */
-    public function sendSMSVerificationCode(string $email, string $password): bool
+    public function sendSMSVerificationCode(string $email = null, string $password = null, string $phone = null): bool
     {
-        $user = $this->getUserByEmail($email);
+        if (is_null($phone)) {
+            $user = $this->getUserByEmail($email);
 
-        if (is_null($user) || !Hash::check($password, $user->getPassword())) {
-            throw new ApiException("INVALID_CREDENTIALS", 422);
+            if (is_null($user) || !Hash::check($password, $user->getPassword())) {
+                throw new ApiException("INVALID_CREDENTIALS", 422);
+            }
+
+            $phone = $user->getPhone();
         }
 
-        $smsCode = $this->createSmsCode($user);
+        $smsCode = $this->createSmsCode($user ?? null, $phone);
 
-        $this->smsService->send($user->getPhone(), sprintf("Your verification code is: %s", $smsCode));
+        $this->smsService->send($phone, sprintf("Your verification code is: %s", $smsCode));
 
         return true;
     }
 
     /**
-     * @param User $user
+     * @param User|null $user
+     * @param string|null $phone
      * @return string
      */
-    private function createSmsCode(User $user): string {
+    private function createSmsCode(User|null $user = null, string $phone = null): string {
         $code = $this->smsService->generateCode();
         UserLoginSmsCode::query()->create([
-            'user_id' => $user->getId(),
+            'user_id' => is_null($phone) ? $user->getId() : null,
             'sms_code' => $code,
+            'phone' => is_null($phone) ? null : $phone,
             'expired_at' => new DateTime('+5 minutes'),
         ]);
 
@@ -150,7 +156,7 @@ class AuthService
     /**
      * @throws ApiException
      */
-    public function verifySmsCode(string $email, string $smsCode, string $phone = null): bool
+    public function verifySmsCode(string $smsCode, string $email = null, string $phone = null): bool
     {
         if (is_null($phone)) {
             $user = $this->getUserByEmail($email);

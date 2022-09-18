@@ -50,7 +50,7 @@ class AuthController extends Controller
      * @throws ApiException
      */
     public function sendSMSVerificationCode(SendSMSVerificationCodeRequest $request, AuthService $authService): JsonResponse {
-        $authService->sendSMSVerificationCode($request->get('email'), $request->get('password'));
+        $authService->sendSMSVerificationCode($request->get('email'), $request->get('password'), $request->get('phone'));
         return response()->json(['message' => 'Sms sent']);
     }
 
@@ -61,7 +61,7 @@ class AuthController extends Controller
      * @throws ApiException
      */
     public function verifySmsCode(VerifySmsCodeRequest $request, AuthService $authService): JsonResponse {
-        $authService->verifySmsCode($request->get('email'), $request->get('smsCode'), $request->get('phone'));
+        $authService->verifySmsCode($request->get('smsCode'), $request->get('email'), $request->get('phone'));
         return response()->json(['message' => 'Sms verified']);
     }
 
