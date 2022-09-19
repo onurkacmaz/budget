@@ -14,6 +14,7 @@ use App\Http\Resources\RegisterResource;
 use App\Services\AuthService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
 
 class AuthController extends Controller
 {
@@ -50,7 +51,25 @@ class AuthController extends Controller
      * @throws ApiException
      */
     public function sendSMSVerificationCode(SendSMSVerificationCodeRequest $request, AuthService $authService): JsonResponse {
-        $authService->sendSMSVerificationCode($request->get('email'), $request->get('password'), $request->get('phone'));
+
+        if ($request->has('phone') && empty($request->get('phone'))) {
+            $user = $authService->getUserByEmail($request->get('email'));
+
+            if (is_null($user) || !Hash::check($request->get('password'), $user->getPassword())) {
+                throw new ApiException("INVALID_CREDENTIALS", 422);
+            }
+
+            if (!$user->isTwoFactorAuthEnabled()) {
+                return response()->json(['isTwoFactorAuthEnabled' => $user->isTwoFactorAuthEnabled()]);
+            }
+
+            $phone = $user->getPhone();
+        }else {
+            $phone = $request->get('phone');
+        }
+
+        $authService->sendSMSVerificationCode($user ?? null, $phone);
+
         return response()->json(['message' => 'Sms sent']);
     }
 

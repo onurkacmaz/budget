@@ -104,19 +104,9 @@ class AuthService
     /**
      * @throws ApiException
      */
-    public function sendSMSVerificationCode(string $email = null, string $password = null, string $phone = null): bool
+    public function sendSMSVerificationCode(User|Model $user = null, string $phone = null): bool
     {
-        if (is_null($phone)) {
-            $user = $this->getUserByEmail($email);
-
-            if (is_null($user) || !Hash::check($password, $user->getPassword())) {
-                throw new ApiException("INVALID_CREDENTIALS", 422);
-            }
-
-            $phone = $user->getPhone();
-        }
-
-        $smsCode = $this->createSmsCode($user ?? null, $phone);
+        $smsCode = $this->createSmsCode($user, $phone);
 
         $this->smsService->send($phone, sprintf("Your verification code is: %s", $smsCode));
 
@@ -128,12 +118,12 @@ class AuthService
      * @param string|null $phone
      * @return string
      */
-    private function createSmsCode(User|null $user = null, string $phone = null): string {
+    private function createSmsCode(User|null $user = null, string|null $phone = null): string {
         $code = $this->smsService->generateCode();
         UserLoginSmsCode::query()->create([
-            'user_id' => is_null($phone) ? $user->getId() : null,
+            'user_id' => $user?->getId(),
             'sms_code' => $code,
-            'phone' => is_null($phone) ? null : $phone,
+            'phone_number' => $phone,
             'expired_at' => new DateTime('+5 minutes'),
         ]);
 

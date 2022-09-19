@@ -22,9 +22,9 @@ class SendSMSVerificationCodeRequest extends BaseRequest
     public function rules(): array
     {
         return [
-            'email' => 'sometimes|email',
-            'password' => 'sometimes|min:6',
-            'phone' => 'sometimes|numeric'
+            'email' => 'nullable|email',
+            'password' => 'nullable|min:6',
+            'phone' => 'nullable|numeric|unique:users'
         ];
     }
 }

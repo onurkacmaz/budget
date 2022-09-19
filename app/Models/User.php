@@ -54,6 +54,10 @@ class User extends Authenticatable
         return $this->password;
     }
 
+    public function isTwoFactorAuthEnabled(): bool {
+        return $this->enable_two_factor_auth;
+    }
+
     public function setToken(string $token): void {
         $this->token = $token;
     }

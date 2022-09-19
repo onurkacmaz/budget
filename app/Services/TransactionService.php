@@ -18,6 +18,7 @@ class TransactionService
             ->where('user_id', $filters['user']->id)
             ->limit($filters['limit'])
             ->orderByDesc('transaction_date')
+            ->orderByDesc('id')
             ->get()
             ->each(function (Transaction $transaction) {
                 $transaction->transaction_date = (new DateTime($transaction->transaction_date))->format("D, j M Y");

@@ -22,9 +22,9 @@ class VerifySmsCodeRequest extends BaseRequest
     public function rules(): array
     {
         return [
-            'email' => 'sometimes|email',
+            'email' => 'nullable|email',
             'smsCode' => 'numeric|required|min:6',
-            'phone' => 'sometimes|nullable'
+            'phone' => 'nullable|nullable'
         ];
     }
 }
