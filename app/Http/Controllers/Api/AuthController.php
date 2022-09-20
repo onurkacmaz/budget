@@ -59,7 +59,7 @@ class AuthController extends Controller
                 throw new ApiException("INVALID_CREDENTIALS", 422);
             }
 
-            if ($user->isTwoFactorAuthEnabled()) {
+            if (!$user->isTwoFactorAuthEnabled()) {
                 return response()->json(['isTwoFactorAuthEnabled' => $user->isTwoFactorAuthEnabled()]);
             }
 
