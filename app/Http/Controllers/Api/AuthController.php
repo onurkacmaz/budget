@@ -52,7 +52,7 @@ class AuthController extends Controller
      */
     public function sendSMSVerificationCode(SendSMSVerificationCodeRequest $request, AuthService $authService): JsonResponse {
 
-        if ($request->has('phone') && empty($request->get('phone'))) {
+        if (!$request->has('phone') || empty($request->get('phone'))) {
             $user = $authService->getUserByEmail($request->get('email'));
 
             if (is_null($user) || !Hash::check($request->get('password'), $user->getPassword())) {
