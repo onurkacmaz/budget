@@ -35,4 +35,14 @@ class TransactionService
             'transaction_date' => $date->format("Y-m-d H:i:s")
         ]);
     }
+
+    public function deleteAll(User $user): void
+    {
+        Transaction::query()->where('user_id', $user->getId())->delete();
+    }
+
+    public function deleteById(int $id, User $user): void
+    {
+        Transaction::query()->where('id', $id)->where('user_id', $user->getId())->delete();
+    }
 }

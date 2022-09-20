@@ -37,6 +37,8 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::group(['prefix' => 'transactions'], function () {
         Route::get('/', [TransactionController::class, 'index']);
         Route::post('/', [TransactionController::class, 'store']);
+        Route::delete('/{id}', [TransactionController::class, 'destroy']);
+        Route::delete('/', [TransactionController::class, 'destroyAll']);
     });
     Route::group(['prefix' => 'notifications'], function () {
         Route::get('/', [NotificationController::class, 'index']);

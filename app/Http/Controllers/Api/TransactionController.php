@@ -12,6 +12,7 @@ use DateTime;
 use Exception;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 
 class TransactionController extends Controller
 {
@@ -64,5 +65,19 @@ class TransactionController extends Controller
         }
 
         return response()->json($transaction, 201);
+    }
+
+    public function destroyAll(Request $request, TransactionService $transactionService): Response
+    {
+        $transactionService->deleteAll($request->user());
+
+        return response()->noContent();
+    }
+
+    public function destroy(int $id, Request $request, TransactionService $transactionService): Response
+    {
+        $transactionService->deleteById($id, $request->user());
+
+        return response()->noContent();
     }
 }
